@@ -36,4 +36,13 @@ class RefdbBackendTest < MiniTest::Unit::TestCase
 
     assert_nil @repo.references["refs/heads/development"]
   end
+
+  def test_lookup_invalid_result
+    @backend.send(:define_singleton_method, :lookup) do |ref_name|
+      "123" if ref_name == "refs/heads/master"
+    end
+
+    err = assert_raises(Rugged::InvalidError) { @repo.references["refs/heads/master"] }
+    assert_equal "Unable to parse OID - contains invalid characters", err.message
+  end
 end

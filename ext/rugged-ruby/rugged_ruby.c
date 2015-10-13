@@ -8,6 +8,12 @@ VALUE rb_cRuggedRefdb;
 VALUE rb_cRuggedRefdbBackend;
 VALUE rb_cRuggedRefdbBackendRuby;
 
+static inline void rugged_exception_check(int errorcode)
+{
+	if (errorcode < 0)
+		rb_funcall(rb_mRugged, rb_intern("__raise_exception__"), 0);
+}
+
 typedef struct {
 	git_refdb_backend parent;
 	VALUE self;
@@ -40,7 +46,7 @@ static int rugged_refdb_backend_custom__lookup(
 	if (TYPE(rb_result) == T_STRING) {
 		// TODO: Handle symbolic refs as well
 		// TODO: Proper exception handling
-		git_oid_fromstr(&oid, StringValueCStr(rb_result));
+		rugged_exception_check(git_oid_fromstr(&oid, StringValueCStr(rb_result)));
 		*out = git_reference__alloc(ref_name, &oid, NULL);
 		return GIT_OK;
 	} else {
