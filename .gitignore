@@ -1,0 +1,6 @@
+Gemfile.lock
+tmp/
+lib/rugged/**/rugged_ruby.so
+vendor/gems
+bin/
+pkg/
