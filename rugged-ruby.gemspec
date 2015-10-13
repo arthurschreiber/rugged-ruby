@@ -1,9 +1,8 @@
 require_relative 'lib/rugged/ruby/version'
-VERSION = Rugged::Ruby::Version
 
 Gem::Specification.new do |s|
   s.name                  = "rugged-ruby"
-  s.version               = VERSION
+  s.version               = Rugged::Ruby::Version
   s.date                  = Time.now.strftime('%Y-%m-%d')
   s.summary               = ""
   s.homepage              = ""
