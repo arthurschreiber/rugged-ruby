@@ -1,4 +1,5 @@
 Gemfile.lock
+/.bundle
 tmp/
 lib/rugged/rugged_ruby.so
 lib/rugged/rugged_ruby.bundle
