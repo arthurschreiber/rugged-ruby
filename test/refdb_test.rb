@@ -24,6 +24,18 @@ class RefdbBackendTest < MiniTest::Unit::TestCase
     assert_equal 1, compress_calls
   end
 
+  def test_compress_exception
+    @backend.send(:define_singleton_method, :compress) do
+      raise "Fail!"
+    end
+
+    err = assert_raises(Rugged::InvalidError) {
+      @repo.refdb.compress
+    }
+
+    assert_equal "compress: Fail! (RuntimeError)\n", err.message
+  end
+
   def test_lookup
     @backend.send(:define_singleton_method, :lookup) do |ref_name|
       "1385f264afb75a56a5bec74243be9b367ba4ca08" if ref_name == "refs/heads/master"
@@ -37,12 +49,21 @@ class RefdbBackendTest < MiniTest::Unit::TestCase
     assert_nil @repo.references["refs/heads/development"]
   end
 
-  def test_lookup_invalid_result
+  def test_lookup_result_no_oid_string
     @backend.send(:define_singleton_method, :lookup) do |ref_name|
       "123" if ref_name == "refs/heads/master"
     end
 
     err = assert_raises(Rugged::InvalidError) { @repo.references["refs/heads/master"] }
     assert_equal "Unable to parse OID - contains invalid characters", err.message
+  end
+
+  def test_lookup_result_no_string
+    @backend.send(:define_singleton_method, :lookup) do |ref_name|
+      1234 if ref_name == "refs/heads/master"
+    end
+
+    err = assert_raises(Rugged::InvalidError) { @repo.references["refs/heads/master"] }
+    assert_equal "lookup: wrong argument type Fixnum (expected String) (TypeError)\n", err.message
   end
 end
