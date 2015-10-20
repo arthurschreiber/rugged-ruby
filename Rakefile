@@ -13,3 +13,5 @@ Rake::TestTask.new do |t|
   t.verbose = false
   t.warning = true
 end
+
+task :default => [:compile, :test]
