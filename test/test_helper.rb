@@ -1,3 +1,5 @@
+require 'bundler/setup'
+
 require 'rugged'
 require 'rugged/ruby'
 
